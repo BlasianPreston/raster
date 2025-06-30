@@ -26,7 +26,7 @@ let command =
             (String.chop_suffix_exn filename ~suffix:".ppm" ^ "_gray.ppm")]
 ;;
 
-let%expect_test ("grayscale" ) =
+let%expect_test "grayscale" =
   let filename = "../images/beach_portrait.ppm" in
   let test_file_name = "../images/reference-beach_portrait_gray.ppm" in
   let image = Image.load_ppm ~filename |> transform in

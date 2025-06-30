@@ -28,6 +28,18 @@ val zero : t
     [p2]. *)
 val ( + ) : t -> t -> t
 
+(** [p1 - p2] returns a new pixel value formed by component-wise subtraction of [p1] and
+    [p2]. *)
+val ( - ) : t -> t -> t
+
+(** [p1 * x] returns a new pixel value formed by component-wise multiplication of [p1] and
+    [x]. *)
+val ( * ) : t -> int -> t
+
+(** [p1 / x] returns a new pixel value formed by component-wise division of [p1] and
+    [x]. *)
+val ( / ) : t -> int -> t
+
 (** [of_int x] returns an equivalent pixel value, where each channel has the same integer
     value [x]. This function is most useful when working with grayscale colors. *)
 val of_int : int -> t
