@@ -1,9 +1,9 @@
 open Core
 
 let transform_helper x y radius image =
-  let x_end = if x + radius > Image.width image then Image.width image else x + radius in
+  let x_end = if x + radius > Image.width image - 1 then Image.width image - 1 else x + radius in
   let x_start = if x - radius < 0 then 0 else x - radius in
-  let y_end = if y + radius > Image.height image then Image.height image else y + radius in
+  let y_end = if y + radius > Image.height image - 1 then Image.height image - 1 else y + radius in
   let y_start = if y - radius < 0 then 0 else y - radius in
   Image.mean_pixel (Image.slice ~x_start ~x_end ~y_start ~y_end image) 
 
