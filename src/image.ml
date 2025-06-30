@@ -498,3 +498,8 @@ let%expect_test "fold and foldi" =
     [%expect {| (2 2) |}];
     return ())
 ;;
+
+let test_helper x y image pixel =
+  let expected_result = get image ~x ~y in
+  Pixel.equal expected_result pixel
+;;

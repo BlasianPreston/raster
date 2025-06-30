@@ -34,11 +34,6 @@ let command =
           ~filename:(String.chop_suffix_exn filename ~suffix:".ppm" ^ "_blur.ppm")]
 ;;
 
-let test_helper x y image pixel =
-  let expected_result = Image.get image ~x ~y in
-  Pixel.equal expected_result pixel
-;;
-
 let%expect_test "blur" =
   let filename = "../images/beach_portrait.ppm" in
   let test_file_name = "../images/reference-beach_portrait_blur.ppm" in
@@ -52,7 +47,7 @@ let result =
     && Image.height transformed_img = Image.height expected_image
   then
     Image.foldi transformed_img ~init:0 ~f:(fun ~x ~y acc pixel ->
-      if test_helper x y expected_image pixel then acc else acc + 1)
+      if Image.test_helper x y expected_image pixel then acc else acc + 1)
   else -1
 in
 print_s [%message (result : int)];

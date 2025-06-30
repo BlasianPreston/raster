@@ -87,3 +87,5 @@ val mean_pixel : t -> Pixel.t
     set the maximum pixel value (default is 255). If [width] or [height] is non-positive,
     the function raises an exception. *)
 val make : ?max_val:int -> width:int -> height:int -> Pixel.t -> t
+
+val test_helper : int -> int -> t -> Pixel.t -> bool
