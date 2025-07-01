@@ -6,6 +6,7 @@ let red (r, _, _) = r
 let green (_, g, _) = g
 let blue (_, _, b) = b
 let zero = 0, 0, 0
+let white ~max_val = max_val, max_val, max_val
 let ( + ) (r1, g1, b1) (r2, g2, b2) = r1 + r2, g1 + g2, b1 + b2
 let ( - ) (r1, g1, b1) (r2, g2, b2) = r1 - r2, g1 - g2, b1 - b2
 let ( * ) (r1, g1, b1) x = r1 * x, g1 * x, b1 * x

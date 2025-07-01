@@ -24,6 +24,10 @@ val blue : t -> int
     [(0, 0, 0)]. *)
 val zero : t
 
+(** [white] is a constant representing a white pixel. It is equivalent to the pixel value
+    [(255, 255, 255)]. *)
+val white : max_val:int -> t
+
 (** [p1 + p2] returns a new pixel value formed by component-wise addition of [p1] and
     [p2]. *)
 val ( + ) : t -> t -> t
