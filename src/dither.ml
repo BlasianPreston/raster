@@ -1,17 +1,22 @@
 open Core
 
+
+let apply_adjustment ~x ~y ~image ~adjustment =
+  if x > Image.width image || x < 0 || y > Image.height image || y < 0 then ()
+  else 
+    Image.set ~x ~y image Pixel.(Image.get ~x ~y image + of_int adjustment)
+  ;;
+
+  (* CR leli: Replace below with apply_adjustment *)
+
+
 let calculate_error_and_set x y image error =
   if x + 1 <= Image.width image - 1
   then (
     let x_cord = x + 1 in
     let adjustment =
-      Int.to_float error *. 7. /. 16. |> Float.round |> Float.to_int
-    in
-    Image.set
-      ~x:x_cord
-      ~y
-      image
-      Pixel.(Image.get ~x:x_cord ~y image + of_int adjustment))
+      Int.to_float error *. 7. /. 16. |> Float.round |> Float.to_int in
+    apply_adjustment ~x:x_cord ~y ~image ~adjustment)
   else ();
   if x - 1 >= 0 && y + 1 <= Image.height image - 1
   then (
@@ -20,11 +25,7 @@ let calculate_error_and_set x y image error =
     let adjustment =
       Int.to_float error *. 3. /. 16. |> Float.round |> Float.to_int
     in
-    Image.set
-      ~x:x_cord
-      ~y:y_cord
-      image
-      Pixel.(Image.get ~x:x_cord ~y:y_cord image + of_int adjustment))
+    apply_adjustment ~x:x_cord ~y:y_cord ~image ~adjustment)
   else ();
   if y + 1 <= Image.height image - 1
   then (
@@ -32,11 +33,7 @@ let calculate_error_and_set x y image error =
     let adjustment =
       Int.to_float error *. 5. /. 16. |> Float.round |> Float.to_int
     in
-    Image.set
-      ~x
-      ~y:y_cord
-      image
-      Pixel.(Image.get ~x ~y:y_cord image + of_int adjustment))
+    apply_adjustment ~x ~y:y_cord ~image ~adjustment)
   else ();
   if x + 1 <= Image.width image - 1 && y + 1 <= Image.height image - 1
   then (
@@ -45,11 +42,7 @@ let calculate_error_and_set x y image error =
     let adjustment =
       Int.to_float error /. 16. |> Float.round |> Float.to_int
     in
-    Image.set
-      ~x:x_cord
-      ~y:y_cord
-      image
-      Pixel.(Image.get ~x:x_cord ~y:y_cord image + of_int adjustment))
+    apply_adjustment ~x:x_cord ~y:y_cord ~image ~adjustment)
   else ()
 ;;
 
@@ -58,6 +51,7 @@ let transform image =
   let grayscale = Grayscale.transform image in
   let max_val = Image.max_val grayscale in
   Image.mapi grayscale ~f:(fun ~x ~y pixel ->
+    (* CR leli: Using red is a bit confusing to represent all 3 colors. Add a comment for why we are only looking at red *)
     let red_pixel = Pixel.red pixel in
     match red_pixel > Image.max_val grayscale / 2 with
     | true ->
