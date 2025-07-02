@@ -28,6 +28,12 @@ val zero : t
     [(255, 255, 255)]. *)
 val white : max_val:int -> t
 
+val red_pix : max_val:int -> t
+
+val green_pix : max_val:int -> t
+
+val blue_pix : max_val:int -> t
+
 (** [p1 + p2] returns a new pixel value formed by component-wise addition of [p1] and
     [p2]. *)
 val ( + ) : t -> t -> t
@@ -61,3 +67,5 @@ val of_color : Graphics.color -> t
 
 (** [equal t1 t2] returns true if the pixel values of [t1] and [t2] are equal. *)
 val equal : t -> t -> bool
+
+val create : int * int * int -> t
