@@ -109,18 +109,10 @@ let rec generate_list_from_0_to_n n x =
 ;;
 
 let closest_in_list value list =
-  match list with
-  | [] -> value (* Handle empty list case *)
-  | head :: tail ->
-    let rec find_closest closest_element min_diff = function
-      | [] -> closest_element
-      | h :: t ->
-        let diff = Int.abs (value - h) in
-        if diff < min_diff
-        then find_closest h diff t
-        else find_closest closest_element min_diff t
-    in
-    find_closest head (Int.abs (value - head)) tail
+  let (_, closest) = List.fold list ~init:(Int.max_value, Int.max_value) ~f:(fun (lowest_diff, matching_val) x ->
+    let diff = Int.abs (value - x) in
+    print_endline (Int.to_string diff);
+    if (Int.min diff lowest_diff) = diff then (diff, x) else (lowest_diff, matching_val)) in closest
 ;;
 
 let round_to_nearest_threshold color_val max_val channels =
@@ -129,10 +121,13 @@ let round_to_nearest_threshold color_val max_val channels =
     List.map (generate_list_from_0_to_n channels 0) ~f:(fun x ->
       x * threshold_multiple)
   in
-  closest_in_list color_val list_of_thresholds
+  let num = closest_in_list color_val list_of_thresholds in
+  print_endline (List.to_string list_of_thresholds ~f:Int.to_string);
+  num
 ;;
 
 let transform image channels =
+  let channels = channels - 1 in
   let max_val = Image.max_val image in
   Image.mapi image ~f:(fun ~x ~y pixel ->
     (* CR leli: Using red is a bit confusing to represent all 3 colors. Add a comment for why we are only looking at red *)
@@ -143,11 +138,12 @@ let transform image channels =
     let error =
       Pixel.( - )
         pixel
-        ( round_to_nearest_threshold red_pixel max_val channels
-        , green_pixel
-          - round_to_nearest_threshold green_pixel max_val channels
-        , blue_pixel - round_to_nearest_threshold blue_pixel max_val channels
-        )
+        (Pixel.create
+           ( red_pixel - round_to_nearest_threshold red_pixel max_val channels
+           , green_pixel
+             - round_to_nearest_threshold green_pixel max_val channels
+           , blue_pixel
+             - round_to_nearest_threshold blue_pixel max_val channels ))
     in
     calculate_error_and_set x y image error;
     Pixel.create
@@ -167,11 +163,13 @@ let command =
           ~doc:"IMAGE_FILE the PPM image file"
       in
       fun () ->
-        let image = Image.load_ppm ~filename in let transformed_image = transform image 2 in
+        let image = Image.load_ppm ~filename in
+        let transformed_image = transform image 2 in
         Image.save_ppm
           transformed_image
           ~filename:
-            (String.chop_suffix_exn filename ~suffix:".ppm" ^ "_color_dither.ppm")]
+            (String.chop_suffix_exn filename ~suffix:".ppm"
+             ^ "_color_dither.ppm")]
 ;;
 
 let%expect_test "ditherr" =
